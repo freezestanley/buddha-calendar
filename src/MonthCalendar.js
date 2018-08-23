@@ -1,29 +1,31 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
-import KeyCode from 'rc-util/lib/KeyCode';
+import KeyCode from 'rc-util/es/KeyCode';
 import CalendarHeader from './calendar/CalendarHeader';
 import CalendarFooter from './calendar/CalendarFooter';
 import CalendarMixin from './mixin/CalendarMixin';
 import CommonMixin from './mixin/CommonMixin';
 
-const MonthCalendar = createReactClass({
+var MonthCalendar = createReactClass({
+  displayName: 'MonthCalendar',
+
   propTypes: {
     monthCellRender: PropTypes.func,
-    dateCellRender: PropTypes.func,
+    dateCellRender: PropTypes.func
   },
   mixins: [CommonMixin, CalendarMixin],
 
-  getInitialState() {
+  getInitialState: function getInitialState() {
     return { mode: 'month' };
   },
+  onKeyDown: function onKeyDown(event) {
+    var keyCode = event.keyCode;
+    var ctrlKey = event.ctrlKey || event.metaKey;
+    var stateValue = this.state.value;
+    var disabledDate = this.props.disabledDate;
 
-  onKeyDown(event) {
-    const keyCode = event.keyCode;
-    const ctrlKey = event.ctrlKey || event.metaKey;
-    const stateValue = this.state.value;
-    const { disabledDate } = this.props;
-    let value = stateValue;
+    var value = stateValue;
     switch (keyCode) {
       case KeyCode.DOWN:
         value = stateValue.clone();
@@ -64,43 +66,37 @@ const MonthCalendar = createReactClass({
       return 1;
     }
   },
-
-  handlePanelChange(_, mode) {
+  handlePanelChange: function handlePanelChange(_, mode) {
     if (mode !== 'date') {
-      this.setState({ mode });
+      this.setState({ mode: mode });
     }
   },
+  render: function render() {
+    var props = this.props,
+        state = this.state;
+    var mode = state.mode,
+        value = state.value;
 
-  render() {
-    const { props, state } = this;
-    const { mode, value } = state;
-    const children = (
-      <div className={`${props.prefixCls}-month-calendar-content`}>
-        <div className={`${props.prefixCls}-month-header-wrap`}>
-          <CalendarHeader
-            prefixCls={props.prefixCls}
-            mode={mode}
-            value={value}
-            locale={props.locale}
-            disabledMonth={props.disabledDate}
-            monthCellRender={props.monthCellRender}
-            monthCellContentRender={props.monthCellContentRender}
-            onMonthSelect={this.onSelect}
-            onValueChange={this.setValue}
-            onPanelChange={this.handlePanelChange}
-          />
-        </div>
-        <CalendarFooter
-          prefixCls={props.prefixCls}
-          renderFooter={props.renderFooter}
-        />
-      </div>
-    );
+    var children = React.createElement('div', { className: props.prefixCls + '-month-calendar-content' }, React.createElement('div', { className: props.prefixCls + '-month-header-wrap' }, React.createElement(CalendarHeader, {
+      prefixCls: props.prefixCls,
+      mode: mode,
+      value: value,
+      locale: props.locale,
+      disabledMonth: props.disabledDate,
+      monthCellRender: props.monthCellRender,
+      monthCellContentRender: props.monthCellContentRender,
+      onMonthSelect: this.onSelect,
+      onValueChange: this.setValue,
+      onPanelChange: this.handlePanelChange
+    })), React.createElement(CalendarFooter, {
+      prefixCls: props.prefixCls,
+      renderFooter: props.renderFooter
+    }));
     return this.renderRoot({
-      className: `${props.prefixCls}-month-calendar`,
-      children,
+      className: props.prefixCls + '-month-calendar',
+      children: children
     });
-  },
+  }
 });
 
 export default MonthCalendar;

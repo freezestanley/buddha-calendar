@@ -1,139 +1,136 @@
+import _classCallCheck from 'babel-runtime/helpers/classCallCheck';
+import _possibleConstructorReturn from 'babel-runtime/helpers/possibleConstructorReturn';
+import _inherits from 'babel-runtime/helpers/inherits';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { getTodayTime, getMonthName } from '../util/index';
 
-const ROW = 4;
-const COL = 3;
+var ROW = 4;
+var COL = 3;
 
 function chooseMonth(month) {
-  const next = this.state.value.clone();
+  var next = this.state.value.clone();
   next.month(month);
   this.setAndSelectValue(next);
 }
 
-function noop() {
+function noop() {}
 
-}
+var MonthTable = function (_Component) {
+  _inherits(MonthTable, _Component);
 
-class MonthTable extends Component {
-  constructor(props) {
-    super(props);
+  function MonthTable(props) {
+    _classCallCheck(this, MonthTable);
 
-    this.state = {
-      value: props.value,
+    var _this = _possibleConstructorReturn(this, _Component.call(this, props));
+
+    _this.state = {
+      value: props.value
     };
+    return _this;
   }
 
-  componentWillReceiveProps(nextProps) {
+  MonthTable.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
     if ('value' in nextProps) {
       this.setState({
-        value: nextProps.value,
+        value: nextProps.value
       });
     }
-  }
+  };
 
-  setAndSelectValue(value) {
+  MonthTable.prototype.setAndSelectValue = function setAndSelectValue(value) {
     this.setState({
-      value,
+      value: value
     });
     this.props.onSelect(value);
-  }
+  };
 
-  months() {
-    const value = this.state.value;
-    const current = value.clone();
-    const months = [];
-    let index = 0;
-    for (let rowIndex = 0; rowIndex < ROW; rowIndex++) {
+  MonthTable.prototype.months = function months() {
+    var value = this.state.value;
+    var current = value.clone();
+    var months = [];
+    var index = 0;
+    for (var rowIndex = 0; rowIndex < ROW; rowIndex++) {
       months[rowIndex] = [];
-      for (let colIndex = 0; colIndex < COL; colIndex++) {
+      for (var colIndex = 0; colIndex < COL; colIndex++) {
         current.month(index);
-        const content = getMonthName(current);
+        var content = getMonthName(current);
         months[rowIndex][colIndex] = {
           value: index,
-          content,
-          title: content,
+          content: content,
+          title: content
         };
         index++;
       }
     }
     return months;
-  }
+  };
 
-  render() {
-    const props = this.props;
-    const value = this.state.value;
-    const today = getTodayTime(value);
-    const months = this.months();
-    const currentMonth = value.month();
-    const { prefixCls, locale, contentRender, cellRender } = props;
-    const monthsEls = months.map((month, index) => {
-      const tds = month.map(monthData => {
-        let disabled = false;
+  MonthTable.prototype.render = function render() {
+    var _this2 = this;
+
+    var props = this.props;
+    var value = this.state.value;
+    var today = getTodayTime(value);
+    var months = this.months();
+    var currentMonth = value.month();
+    var prefixCls = props.prefixCls,
+        locale = props.locale,
+        contentRender = props.contentRender,
+        cellRender = props.cellRender;
+
+    var monthsEls = months.map(function (month, index) {
+      var tds = month.map(function (monthData) {
+        var _classNameMap;
+
+        var disabled = false;
         if (props.disabledDate) {
-          const testValue = value.clone();
+          var testValue = value.clone();
           testValue.month(monthData.value);
           disabled = props.disabledDate(testValue);
         }
-        const classNameMap = {
-          [`${prefixCls}-cell`]: 1,
-          [`${prefixCls}-cell-disabled`]: disabled,
-          [`${prefixCls}-selected-cell`]: monthData.value === currentMonth,
-          [`${prefixCls}-current-cell`]: today.year() === value.year() &&
-          monthData.value === today.month(),
-        };
-        let cellEl;
+        var classNameMap = (_classNameMap = {}, _classNameMap[prefixCls + '-cell'] = 1, _classNameMap[prefixCls + '-cell-disabled'] = disabled, _classNameMap[prefixCls + '-selected-cell'] = monthData.value === currentMonth, _classNameMap[prefixCls + '-current-cell'] = today.year() === value.year() && monthData.value === today.month(), _classNameMap);
+        var cellEl = void 0;
         if (cellRender) {
-          const currentValue = value.clone();
+          var currentValue = value.clone();
           currentValue.month(monthData.value);
           cellEl = cellRender(currentValue, locale);
         } else {
-          let content;
+          var content = void 0;
           if (contentRender) {
-            const currentValue = value.clone();
-            currentValue.month(monthData.value);
-            content = contentRender(currentValue, locale);
+            var _currentValue = value.clone();
+            _currentValue.month(monthData.value);
+            content = contentRender(_currentValue, locale);
           } else {
             content = monthData.content;
           }
-          cellEl = (
-            <a className={`${prefixCls}-month`}>
-              {content}
-            </a>
-          );
+          cellEl = React.createElement('a', { className: prefixCls + '-month' }, content);
         }
-        return (
-          <td
-            role="gridcell"
-            key={monthData.value}
-            onClick={disabled ? null : chooseMonth.bind(this, monthData.value)}
-            title={monthData.title}
-            className={classnames(classNameMap)}
-          >
-            {cellEl}
-          </td>);
+        return React.createElement('td', {
+          role: 'gridcell',
+          key: monthData.value,
+          onClick: disabled ? null : chooseMonth.bind(_this2, monthData.value),
+          title: monthData.title,
+          className: classnames(classNameMap)
+        }, cellEl);
       });
-      return (<tr key={index} role="row">{tds}</tr>);
+      return React.createElement('tr', { key: index, role: 'row' }, tds);
     });
 
-    return (
-      <table className={`${prefixCls}-table`} cellSpacing="0" role="grid">
-        <tbody className={`${prefixCls}-tbody`}>
-        {monthsEls}
-        </tbody>
-      </table>
-    );
-  }
-}
+    return React.createElement('table', { className: prefixCls + '-table', cellSpacing: '0', role: 'grid' }, React.createElement('tbody', { className: prefixCls + '-tbody' }, monthsEls));
+  };
+
+  return MonthTable;
+}(Component);
 
 MonthTable.defaultProps = {
-  onSelect: noop,
+  onSelect: noop
 };
 MonthTable.propTypes = {
   onSelect: PropTypes.func,
   cellRender: PropTypes.func,
   prefixCls: PropTypes.string,
-  value: PropTypes.object,
+  value: PropTypes.object
 };
 export default MonthTable;

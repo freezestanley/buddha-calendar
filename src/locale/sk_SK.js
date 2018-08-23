@@ -23,5 +23,5 @@ export default {
   previousDecade: 'Predchádzajúca dekáda',
   nextDecade: 'Nasledujúca dekáda',
   previousCentury: 'Predchádzajúce storočie',
-  nextCentury: 'Nasledujúce storočie',
+  nextCentury: 'Nasledujúce storočie'
 };

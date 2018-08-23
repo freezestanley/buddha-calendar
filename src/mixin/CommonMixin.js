@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import enUs from '../locale/en_US';
 
-function noop() {
-}
+function noop() {}
 
 export default {
   propTypes: {
@@ -13,10 +12,10 @@ export default {
     onSelect: PropTypes.func,
     prefixCls: PropTypes.string,
     onChange: PropTypes.func,
-    onOk: PropTypes.func,
+    onOk: PropTypes.func
   },
 
-  getDefaultProps() {
+  getDefaultProps: function getDefaultProps() {
     return {
       locale: enUs,
       style: {},
@@ -26,22 +25,23 @@ export default {
       onSelect: noop,
       onChange: noop,
       onClear: noop,
-      renderFooter() {
+      renderFooter: function renderFooter() {
         return null;
       },
-      renderSidebar() {
+      renderSidebar: function renderSidebar() {
         return null;
-      },
+      }
     };
   },
-
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
     return this.props.visible || nextProps.visible;
   },
+  getFormat: function getFormat() {
+    var format = this.props.format;
+    var _props = this.props,
+        locale = _props.locale,
+        timePicker = _props.timePicker;
 
-  getFormat() {
-    let { format } = this.props;
-    const { locale, timePicker } = this.props;
     if (!format) {
       if (timePicker) {
         format = locale.dateTimeFormat;
@@ -51,14 +51,12 @@ export default {
     }
     return format;
   },
-
-  focus() {
+  focus: function focus() {
     if (this.rootInstance) {
       this.rootInstance.focus();
     }
   },
-
-  saveRoot(root) {
+  saveRoot: function saveRoot(root) {
     this.rootInstance = root;
-  },
+  }
 };
